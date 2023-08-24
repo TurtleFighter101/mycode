@@ -1,0 +1,60 @@
+---
+- name: use role distributed with collection
+  hosts: localhost # defined by inventory
+  connection: ssh  # default connection type
+  gather_facts: no # no need to collect ansible_facts
+
+  # this is the collection we want to make part of this playbook namespace
+  collections:
+  - adalovelace.myfirstcollection
+
+  tasks:
+  - name: Example of how to use a collection
+    debug:
+      msg: "Any new modules, roles, or other distributables included in the role would not be usable!"
+
+  - name: Use collection components without using the keyword "collection"
+  hosts: all
+
+  tasks:
+    - my_namespace.my_collection.mymodule:
+        option1: value
+- name: Using collection components
+
+  hosts: all
+  tasks:
+    # use role1 from adalovelace.myfirstcollection
+    - import_role:
+        name: adalovelace.myfirstcollection.role1
+
+    # use a custom module "mymodule" located in namespace buzzaldrin within the collection apollo
+    - name: Use the custom "mymodule"
+      buzzaldrin.apollo.mymodule:
+        option1: value
+
+    - name: Use custom lookup and filter plugins from the collection
+      debug:
+        msg: '{{ lookup("adalovelace.myfirstcollection.lookup1", ' param1 ') | adalovelace.myfirstcollection.filter1 }}'
+
+- name: Using the collections keyword
+  hosts: all
+
+  # multiple collections may be imported
+  collections:
+   - adalovelace.myfirstcollection
+   - buzzaldrin.apollo
+
+  tasks:
+    # use role1 from adalovelace.myfirstcollection
+    - import_role:
+        name: role1
+
+    # use a custom module "mymodule" located in namespace buzzaldrin within the collection apollo
+    - name: Use the custom "mymodule" from within the buzzaldrin namespace
+      mymodule:
+        option1: value
+
+    - name: You still need to use FQCN for non-action plugins
+      debug:
+        msg: '{{ lookup("adalovelace.myfirstcollection.lookup1", 'param1')| adalovelace.myfirstcollection.filter1 }}'
+
