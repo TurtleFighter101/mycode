@@ -13,7 +13,7 @@
       ## type the password twice (optional)
       confirm: yes
       ## this is the size of the RAND you'd like to have generated (optional)
-      salt_size: 7
+      salt_size: 10
       # salt: slappysquirrel88 # provide your own RAND (optional)
       ## default to this password (optional)
       default: "qwerty"
